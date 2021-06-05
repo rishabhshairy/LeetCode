@@ -1,28 +1,26 @@
 class Solution {
     public int removeElement(int[] nums, int val) {
-		int valCount = 0;
-		for (int i = 0; i < nums.length; i++) {
-			if (nums[i] == val) {
-				valCount++;
-			}
-		}
+        Arrays.sort(nums);
+        int i=nums.length-1;
+        while(i>=0){
+            if(nums[i]==val){
+                for( int j=i;j<nums.length-1;j++){
+                    int temp=nums[j];
+                    nums[j]=nums[j+1];
+                    nums[j+1]=temp;
+                }
+                
+            }
+            i--;
 
-		int temp;
-		int ptr1 = 0;
-		for (int ptr2 = ptr1 + 1; ptr2 < nums.length; ptr2++) {
-			if (nums[ptr1] != val && nums[ptr2] != val) {
-				ptr1++;
-			} else if (nums[ptr1] == val && nums[ptr2] == val) {
-				continue;
-			} else if (nums[ptr1] == val && nums[ptr2] != val) {
-				temp = nums[ptr1];
-				nums[ptr1] = nums[ptr2];
-				nums[ptr2] = temp;
-				ptr1++;
-			} else {
-				ptr1++;
-			}
-		}
-		return nums.length - valCount;
+        }
+        int length=0;
+        for(int k=0;k<nums.length;k++){
+            if(nums[k]==val){
+                break;
+            }
+            length++;
+        }
+        return length;
     }
 }
