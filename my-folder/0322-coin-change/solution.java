@@ -1,6 +1,6 @@
 class Solution {
     public int coinChange(int[] coins, int amount) {
-                int n = coins.length;
+        int n = coins.length;
         int[][] tdp = new int[n + 1][amount + 1];
 
         // intialize
