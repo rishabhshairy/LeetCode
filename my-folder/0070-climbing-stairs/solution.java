@@ -1,6 +1,6 @@
 class Solution {
     public int climbStairs(int n) {
-                if (n == 0) {
+        if (n == 0) {
             return 1;
         } else {
             int[] stepsTaken = new int[n+1];
