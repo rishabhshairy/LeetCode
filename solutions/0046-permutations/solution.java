@@ -1,35 +1,32 @@
 class Solution {
-    public List<List<Integer>> permute(int[] nums) {
-        
-        List<List<Integer>> allPerm = new ArrayList<>();
-        int left = 0;
-        int right = nums.length - 1;
-        findPermutation(nums, left, right, allPerm);
-        return allPerm;
+    public static List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        findPermutationsWithSwap(0, nums, result);
+        return result;
     }
-    private void findPermutation(int[] num, int left, int right, List<List<Integer>> answer) {
 
-        if (left == right) {
-            List<Integer> permutuedArray = new ArrayList<>();
-            for (Integer i :
-                    num) {
-                permutuedArray.add(i);
+    private static void findPermutationsWithSwap(int index, int[] arr, List<List<Integer>> result) {
+        if (index == arr.length) {
+            List<Integer> permutedList = new ArrayList<>();
+            for (int num :
+                    arr) {
+                permutedList.add(num);
             }
-            answer.add(permutuedArray);
-        } else {
-            for (int i = left; i <= right; i++) {
-                num = swap(num, left, i);
-                findPermutation(num, left + 1, right, answer);
-                num = swap(num, left, i);
-            }
+            result.add(new ArrayList<>(permutedList));
+            return;
+        }
+
+        for (int i = index; i < arr.length; i++) {
+            swap(arr, i, index);
+            findPermutationsWithSwap(index + 1, arr, result);
+            swap(arr, i, index);
 
         }
     }
 
-    private int[] swap(int[] num, int left, int i) {
-        int temp = num[left];
-        num[left] = num[i];
-        num[i] = temp;
-        return num;
+    private static void swap(int[] arr, int num1, int num2) {
+        int temp = arr[num1];
+        arr[num1] = arr[num2];
+        arr[num2] = temp;
     }
 }
