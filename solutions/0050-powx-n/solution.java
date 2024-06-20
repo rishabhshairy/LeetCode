@@ -1,18 +1,25 @@
 class Solution {
     public double myPow(double x, int n) {
-        if (n == 0) {
-            return 1;
+        double ans = 1.0;
+
+        long power = n;
+
+        if (power < 0) {
+            power = power * (-1);
+        }
+
+        while (power > 0) {
+            if (power % 2 == 0) {
+                x = x * x;
+                power = power / 2;
+            } else {
+                ans = ans * x;
+                power = power - 1;
+            }
         }
         if (n < 0) {
-            if (x == -1) {
-                return 1;
-            }
-            if (n == Integer.MIN_VALUE) {
-                n = n + 1;
-            }
-            n = -n;
-            x = 1 / x;
+            ans = (double) 1.0 / (double) ans;
         }
-        return n % 2 == 0 ? myPow(x * x, n / 2) : x * myPow(x * x, n / 2);
+        return ans;
     }
 }
