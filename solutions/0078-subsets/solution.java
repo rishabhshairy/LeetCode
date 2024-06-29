@@ -1,15 +1,20 @@
 class Solution {
     public List<List<Integer>> subsets(int[] nums) {
-    Arrays.sort(nums); // make sure subsets are ordered
-    List<List<Integer>> result = new ArrayList<>();
-    result.add(new ArrayList<>()); // start with empty set
-    for (int i = 0; i < nums.length; ++i) {
-        for (int j = 0, size = result.size(); j < size; ++j) { // remember
-            List<Integer> subset = new ArrayList<>(result.get(j)); // copy a new one
-            subset.add(nums[i]); // expand
-            result.add(subset); // collect
-        }
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        findSubsets(0, nums, nums.length, result, new ArrayList<Integer>());
+        return result;
     }
-    return result;
+
+    private static void findSubsets(int index, int[] arr, int length, List<List<Integer>> result, ArrayList<Integer> ds) {
+        result.add(new ArrayList<>(ds));
+        for (int i = index; i < length; i++) {
+            if (i != index && arr[i] == arr[i - 1]) {
+                continue;
+            }
+            ds.add(arr[i]);
+            findSubsets(i + 1, arr, length, result, ds);
+            ds.remove(ds.size() - 1);
+        }
     }
 }
