@@ -1,28 +1,23 @@
 class Solution {
     public List<String> generateParenthesis(int n) {
         List<String> answer = new ArrayList<>();
-        int open = n;
-        int close = n;
-        String out = "";
-        solve(open, close, out, answer);
+        String output = "";
+        solveDiffApproach(0,0,output,answer,n);
         return answer;
     }
 
-    private static void solve(int open, int close, String out, List<String> answer) {
-        if (open == 0 && close == 0) {
+    public static void solveDiffApproach(int leftBracket, int rightBracket, String out, List<String> answer, int n) {
+        if (out.length() == 2 * n) {
             answer.add(out);
             return;
         }
 
-        if (open != 0) {
-            String op1 = out;
-            op1 = op1 + "(";
-            solve(open - 1, close, op1, answer);
+        if (leftBracket < n) {
+            solveDiffApproach(leftBracket + 1, rightBracket, out + "(", answer, n);
         }
-        if (close > open) {
-            String op2 = out;
-            op2 += ")";
-            solve(open, close - 1, op2, answer);
+
+        if (rightBracket < leftBracket) {
+            solveDiffApproach(leftBracket, rightBracket + 1, out + ")", answer, n);
         }
     }
 }
