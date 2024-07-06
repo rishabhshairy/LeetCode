@@ -1,44 +1,28 @@
 class Solution {
-    public int majorityElement(int[] a) {
-        int probableElement = probableCandiate(a, a.length);
-        if (a.length == 1) {
-			return a[0];
-		}
-		
-		if (a.length == 2 && a[0]==a[1]) {
-			return a[0];
-		} 
+    public int majorityElement(int[] nums) {
+        int count = 0;
+        int element = 0;
 
-		
-		int elemCount = 0;
-		for (int i = 0; i < a.length; i++) {
-			if (a[i] == probableElement) {
-				elemCount++;
-			}
-			if (elemCount > a.length / 2) {
-				return probableElement;
-			}
-		}
+        for (int i = 0; i < nums.length; i++) {
+            if (count == 0) {
+                count++;
+                element = nums[i];
+            } else if (element == nums[i]) {
+                count++;
+            } else {
+                count--;
+            }
+        }
 
-		return -1;
+        // check if stored element is Majority in array
+
+        int nextCount = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (element == nums[i]) {
+                nextCount++;
+            }
+        }
+
+        return (nextCount > nums.length / 2) ? element : -1;
     }
-    static int probableCandiate(int[] a, int n)
-	{
-		int count = 1;
-		int index = 0;
-
-		for (int i = 1; i < a.length; i++) {
-			if (a[index] == a[i]) {
-				count++;
-			} else {
-				count--;
-			}
-
-			if (count == 0) {
-				index = i;
-				count = 1;
-			}
-		}
-		return a[index];
-	}
 }
