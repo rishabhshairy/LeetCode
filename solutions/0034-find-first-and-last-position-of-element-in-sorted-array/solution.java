@@ -1,40 +1,46 @@
 class Solution {
     public int[] searchRange(int[] nums, int target) {
-    int[] result = new int[2];
-    result[0] = findFirst(nums, target);
-    result[1] = findLast(nums, target);
-    return result;
-}
-
-private int findFirst(int[] nums, int target){
-    int idx = -1;
-    int start = 0;
-    int end = nums.length - 1;
-    while(start <= end){
-        int mid = (start + end) / 2;
-        if(nums[mid] >= target){
-            end = mid - 1;
-        }else{
-            start = mid + 1;
+        int n = nums.length;
+        int first = findLowerBound(nums, target);
+        if (first == n || nums[first] != target) {
+            return new int[] { -1, -1 };
         }
-        if(nums[mid] == target) idx = mid;
+        return new int[]{first, findUpperBound(nums,target)-1};
     }
-    return idx;
-}
 
-private int findLast(int[] nums, int target){
-    int idx = -1;
-    int start = 0;
-    int end = nums.length - 1;
-    while(start <= end){
-        int mid = (start + end) / 2;
-        if(nums[mid] <= target){
-            start = mid + 1;
-        }else{
-            end = mid - 1;
+    public static int findLowerBound(int[] arr, int target) {
+        int low = 0;
+        int high = arr.length - 1;
+        int ans = arr.length; // setting hypothetical answer if we dont find any such number
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+
+            if (arr[mid] >= target) {
+                ans = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
         }
-        if(nums[mid] == target) idx = mid;
+        return ans;
     }
-    return idx;
-}
+
+    public static int findUpperBound(int[] arr, int target) {
+        int low = 0;
+        int high = arr.length - 1;
+        int ans = arr.length; // setting hypothetical answer if we dont find any such number
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+
+            if (arr[mid] > target) {
+                ans = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return ans;
+    }
 }
