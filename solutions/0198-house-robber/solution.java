@@ -1,16 +1,18 @@
 class Solution {
     public int rob(int[] nums) {
-        int n = nums.length;
-        int[] dp = new int[n + 2];
-        Arrays.fill(dp, -1);
-        dp[n] = 0;
-        dp[n + 1] = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            int prof1 = nums[i] + dp[i + 2];
-            int prof2 = dp[i + 1];
-            dp[i] = Math.max(prof1, prof2);
-        }
-        return dp[0];
-    }
+        int prev = nums[0]; // dp[0] or i-1
+        int prev2 = 0;          // neg  or i-2
 
+        for (int index = 1; index < nums.length; index++) {
+            int sumPick = nums[index];
+            if (index > 1) {
+                sumPick += prev2;
+            }
+            int sumNonPick = prev;
+            int currSum = Math.max(sumPick, sumNonPick);
+            prev2 = prev;
+            prev = currSum;
+        }
+        return prev;
+    }
 }
