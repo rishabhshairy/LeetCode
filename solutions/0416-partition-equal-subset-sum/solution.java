@@ -1,35 +1,39 @@
 class Solution {
-    public boolean canPartition(int[] arr) {
-        int N=arr.length;
-        int sum=IntStream.of(arr).sum();
-        
-        if(sum%2!=0){
-            return false;
+    public boolean canPartition(int[] nums) {
+        int n = nums.length;
+        int totalSum = 0;
+        for (int num : nums) {
+            totalSum += num;
         }
-        sum=sum/2;
-        Boolean tdp[][] = new Boolean[N + 1][sum + 1];
 
-        for (int i = 0; i <= N; i++) {
-            for (int j = 0; j <= sum; j++) {
-                if (i == 0) {
-                    tdp[i][j] = false;
-                }
-                if (j == 0) {
-                    tdp[i][j] = true;
-                }
+        if (totalSum % 2 == 0) {
+            int halfSum = totalSum / 2;
+            return findSubsetSum(nums, n, halfSum);
+        }
+        return false;
+    }
 
+    private static boolean findSubsetSum(int[] arr, int n, int target) {
+        boolean[][] dp = new boolean[n][target + 1];
+
+        for (int i = 0; i < dp.length; i++) {
+            dp[i][0] = true;
+        }
+
+        if (arr[0] <= target) {
+            dp[0][arr[0]] = true;
+        }
+
+        for (int index = 1; index < n; index++) {
+            for (int currTarget = 1; currTarget <= target; currTarget++) {
+                boolean notPicked = dp[index - 1][currTarget];
+                boolean picked = false;
+                if (arr[index] <= currTarget) {
+                    picked = dp[index - 1][currTarget - arr[index]];
+                }
+                dp[index][currTarget] = picked || notPicked;
             }
         }
-
-        for (int i = 1; i < N + 1; i++) {
-            for (int j = 1; j < sum + 1; j++) {
-                if (arr[i - 1] <= j) {
-                    tdp[i][j] = tdp[i - 1][j - arr[i - 1]] || tdp[i - 1][j];
-                } else {
-                    tdp[i][j] = tdp[i - 1][j];
-                }
-            }
-        }
-        return tdp[N][sum];
+        return dp[n - 1][target];
     }
 }
