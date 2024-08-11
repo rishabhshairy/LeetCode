@@ -1,37 +1,23 @@
 class Solution {
-    public int change(int amount, int[] coins) {
-        int n = coins.length;
-        int[][] dp = new int[n][amount + 1];
-
-        for (int[] row :
-                dp) {
-            Arrays.fill(row, -1);
-        }
-
-        return countWaysRecMemo(n - 1, coins, amount, dp);
-    }
-
-        private static int countWaysRecMemo(int index, int[] denominations, int value, int[][] dp) {
+    public int change(int value, int[] denominations) {
+        int n = denominations.length;
+        int[][] dp = new int[n + 1][value + 1];
 
         // base case
-        if (index == 0) {
-            if (value % denominations[index] == 0) {
-                return 1;
+        for (int T = 0; T <= value; T++) {
+            dp[0][T] = T % denominations[0] == 0 ? 1 : 0;
+        }
+
+        for (int index = 1; index < n; index++) {
+            for (int val = 0; val <= value; val++) {
+                int notPick = dp[index - 1][val];
+                int pick = 0;
+                if (denominations[index] <= val) {
+                    pick = dp[index][val - denominations[index]];
+                }
+                dp[index][val] = notPick + pick;
             }
-            return 0;
         }
-
-        if (dp[index][value] != -1) {
-            return dp[index][value];
-        }
-
-        int notPick = countWaysRecMemo(index - 1, denominations, value, dp);
-        int pick = 0;
-        if (denominations[index]<=value){
-            pick = countWaysRecMemo(index, denominations, value - denominations[index], dp);
-
-        }
-
-        return dp[index][value] = notPick + pick;
+        return dp[n - 1][value];
     }
 }
