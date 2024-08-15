@@ -1,53 +1,51 @@
 class Solution {
-    public String shortestCommonSupersequence(String X, String Y) {
-        int n = X.length();
-        int m = Y.length();
+    public String shortestCommonSupersequence(String a, String b) {
+        int n = a.length();
+        int m = b.length();
 
-        int[][] tdp = new int[n + 1][m + 1];
+        int[][] dp = new int[n + 1][m + 1];
 
-        for (int i = 0; i < n + 1; i++) {
-            for (int j = 0; j < m + 1; j++) {
-                if (i == 0 || j == 0) {
-                    tdp[i][j] = 0;
-                } else if (X.charAt(i - 1) == Y.charAt(j - 1)) {
-                    tdp[i][j] = 1 + tdp[i - 1][j - 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (a.charAt(i - 1) == b.charAt(j - 1)) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];
                 } else {
-                    tdp[i][j] = Math.max(tdp[i - 1][j], tdp[i][j - 1]);
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
                 }
             }
         }
 
-        int i = n;
-        int j = m;
-        StringBuilder scs = new StringBuilder();
+        // scs length => n + m + dp[n][m]
+        char[] scs = new char[n + m - dp[n][m]];
+        int k = scs.length - 1;
 
+        // Fill answer using DP array
+        int i = n, j = m;
         while (i > 0 && j > 0) {
-            char current;
-            if (X.charAt(i - 1) == Y.charAt(j - 1)) {
-                current = X.charAt(i - 1);
+            if (a.charAt(i - 1) == b.charAt(j - 1)) {
+                scs[k--] = a.charAt(i - 1);
                 i--;
                 j--;
+            } else if (dp[i - 1][j] > dp[i][j - 1]) {
+                scs[k--] = a.charAt(i - 1);
+                i--;
             } else {
-                if (tdp[i][j - 1] > tdp[i - 1][j]) {
-                    current = Y.charAt(j - 1);
-                    j--;
-                } else {
-                    current = X.charAt(i - 1);
-                    i--;
-                }
+                scs[k--] = b.charAt(j - 1);
+                j--;
             }
-            scs.append(current);
         }
 
+        // fill remaining string
         while (i > 0) {
-            scs.append(X.charAt(i - 1));
+            scs[k--] = a.charAt(i - 1);
             i--;
         }
+
         while (j > 0) {
-            scs.append(Y.charAt(j - 1));
+            scs[k--] = b.charAt(j - 1);
             j--;
         }
 
-        return scs.reverse().toString();
+        return new StringBuilder(String.valueOf(scs)).toString();
     }
 }
