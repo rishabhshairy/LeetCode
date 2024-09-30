@@ -15,33 +15,29 @@
  */
 class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
-        List<List<Integer>> answer = new ArrayList<>();
+                List<List<Integer>> levelList = new ArrayList<>();
         if (root == null) {
-            return answer;
+            return levelList;
         }
-        traverse(root, answer);
-        return answer;
-    }
 
-    private void traverse(TreeNode root, List<List<Integer>> answer) {
+        Queue<TreeNode> nodeQueue = new ArrayDeque<>();
+        nodeQueue.offer(root);
 
-        Queue<TreeNode> nodes = new LinkedList<>();
-        nodes.offer(root);
-        while (!nodes.isEmpty()) {
-            int queueSize = nodes.size();
-            List<Integer> nodeValList = new ArrayList<>();
-            for (int i = 0; i < queueSize; i++) {
-                TreeNode tempNode = nodes.poll();
-                nodeValList.add(tempNode.val);
-
-                if (tempNode.left != null) {
-                    nodes.add(tempNode.left);
+        while (!nodeQueue.isEmpty()) {
+            int levelNum = nodeQueue.size();
+            List<Integer> levelNodeList = new ArrayList<>();
+            for (int i = 0; i < levelNum; i++) {
+                // check for left and right child
+                if (nodeQueue.peek().left != null) {
+                    nodeQueue.offer(nodeQueue.peek().left);
                 }
-                if (tempNode.right != null) {
-                    nodes.add(tempNode.right);
+                if (nodeQueue.peek().right != null) {
+                    nodeQueue.offer(nodeQueue.peek().right);
                 }
+                levelNodeList.add(nodeQueue.poll().val);
             }
-            answer.add(nodeValList);
+            levelList.add(levelNodeList);
         }
+        return levelList;
     }
 }
