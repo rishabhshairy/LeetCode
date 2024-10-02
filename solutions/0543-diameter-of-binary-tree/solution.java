@@ -1,38 +1,34 @@
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode() {}
- *     TreeNode(int val) { this.val = val; }
- *     TreeNode(int val, TreeNode left, TreeNode right) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
  * }
  */
 class Solution {
     public int diameterOfBinaryTree(TreeNode root) {
-        if(root == null){
+        int[] maxi = new int[1]; // using bcoz in java variables are not passed by reference
+        dfsMaxHeight(root, maxi);
+        return maxi[0];
+    }
+
+    private int dfsMaxHeight(TreeNode root, int[] maxi) {
+        if (root == null) {
             return 0;
         }
-        int withRoot = height(root.left) + height(root.right);
-        int leftToRoot = diameterOfBinaryTree(root.left);
-        int rightToRoot = diameterOfBinaryTree(root.right);
-        return Math.max(withRoot,Math.max(leftToRoot,rightToRoot));
+
+        int leftHeight = dfsMaxHeight(root.left, maxi);
+        int rightHeight = dfsMaxHeight(root.right, maxi);
+        maxi[0] = Math.max(maxi[0], leftHeight + rightHeight);
+        return 1 + Math.max(leftHeight, rightHeight);
+
     }
-    public int height(TreeNode root){
-       if (root==null){
-            return 0;
-        }
-       if(root.left==null &&  root.right==null){
-            return 1;
-        }
-        int leftCount=height(root.left);
-        int rightCount=height(root.right);
-        return 1 + Math.max(leftCount,rightCount);
-    }
-    
 }
