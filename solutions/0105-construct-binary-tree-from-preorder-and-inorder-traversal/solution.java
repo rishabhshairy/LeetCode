@@ -1,47 +1,49 @@
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode() {}
- *     TreeNode(int val) { this.val = val; }
- *     TreeNode(int val, TreeNode left, TreeNode right) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
  * }
  */
 class Solution {
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        // array to use for pre-indexes
-        int[] current = {0};
-        HashMap<Integer, Integer> inorderHashMap = new HashMap<>();
+        HashMap<Integer, Integer> inorderMap = new LinkedHashMap<>();
+
         for (int i = 0; i < inorder.length; i++) {
-            inorderHashMap.put(inorder[i], i);
+            inorderMap.put(inorder[i], i);
         }
-        return construct(0, preorder.length - 1, preorder, current, inorderHashMap);
+
+        // initiate root of new Tree
+        TreeNode root = build(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1, inorderMap);
+        return root;
     }
 
-    private TreeNode construct(int start, int end, int[] preorder, int[] current, HashMap<Integer, Integer> inorderHashMap) {
-        if (current[0] >= preorder.length) {
+    private TreeNode build(int[] preorder, int preStart, int preEnd, int[] inorder, int inStart, int inEnd,
+            HashMap<Integer, Integer> inorderMap) {
+
+        if (preStart > preEnd || inStart > inEnd) {
             return null;
         }
 
-        TreeNode root = new TreeNode(preorder[current[0]]);
-        if (start > end) {
-            return null;
-        }
-        else {
-            current[0]++;
-            int index = inorderHashMap.get(root.val);
+        TreeNode rootNode = new TreeNode(preorder[preStart]);
+        // get inorder root position which is 1st element of pre-order
+        int inorderRootPosition = inorderMap.get(rootNode.val);
+        int nodesLeft = inorderRootPosition - inStart;
 
-            root.left = construct(start, index - 1, preorder, current, inorderHashMap);
-            root.right = construct(index + 1, end, preorder, current, inorderHashMap);
-        }
+        rootNode.left = build(preorder, preStart + 1, preStart + nodesLeft,
+                inorder, inStart, inorderRootPosition - 1, inorderMap);
 
+        rootNode.right = build(preorder, preStart + nodesLeft + 1, preEnd,
+                inorder, inorderRootPosition + 1, inEnd, inorderMap);
 
-        return root;
+        return rootNode;
     }
 }
