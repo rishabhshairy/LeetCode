@@ -15,27 +15,9 @@
  */
 class Solution {
     public TreeNode searchBST(TreeNode root, int val) {
-        if (root == null) {
-            return null;
+                while (root != null && root.val != val) {
+            root = val < root.val ? root.left : root.right;
         }
-
-        if (root.val == val) {
-            return root;
-        }
-        return solve(root, val);
-    }
-
-    private TreeNode solve(TreeNode root, int val) {
-        if (root == null) {
-            return root;
-        }
-        if (root.val == val) {
-            return root;
-        }
-        if (val > root.val) {
-            return solve(root.right, val);
-        } else {
-            return solve(root.left, val);
-        }
+        return root;
     }
 }
