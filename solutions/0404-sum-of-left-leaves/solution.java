@@ -14,32 +14,23 @@
  * }
  */
 class Solution {
+    static boolean leftMovement = true;
     public int sumOfLeftLeaves(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
-        if (root.left == null && root.right == null) {
-            return 0;
-        }
-        int[] arr = new int[1];
-        solve(root, arr);
-        return arr[0];
+        int[] sum = {0};
+        solve(root, sum);
+        return sum[0];
     }
 
-    private void solve(TreeNode root, int[] arr) {
-        if (root == null) {
+    private static void solve(TreeNode node, int[] sum) {
+        if (node == null) {
             return;
         }
-        if (root.left != null) {
-             if (root.left.left == null && root.left.right == null) {
-                int sum = arr[0];
-                sum += root.left.val;
-                arr[0] = sum;
-            }
-            
+        if (node.left == null && node.right == null && leftMovement) {
+            sum[0] += node.val;
         }
-        solve(root.left, arr);
-        solve(root.right, arr);
+        leftMovement = true;
+        solve(node.left, sum);
+        leftMovement = false;
+        solve(node.right, sum);
     }
-    
 }
