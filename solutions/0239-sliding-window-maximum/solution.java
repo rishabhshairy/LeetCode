@@ -1,33 +1,31 @@
 class Solution {
     public int[] maxSlidingWindow(int[] arr, int k) {
-            Deque<Integer> maxNum = new ArrayDeque<>();
-            ArrayList<Integer> answer = new ArrayList<>();
-        
-            int i;
-            for (i = 0; i < k; i++) {
-                while (!maxNum.isEmpty() && arr[i] >= arr[maxNum.peekLast()]) {
-                    maxNum.removeLast();
+        ArrayList<Integer> result = new ArrayList<>();
+        Deque<Integer> maxQueue = new ArrayDeque<>();
+
+        int left = 0, right = 0;
+
+        while (right < arr.length) {
+            // push max element into queue
+            while (!maxQueue.isEmpty() && maxQueue.peekLast() < arr[right]) {
+                maxQueue.pollLast();
+            }
+            maxQueue.offerLast(arr[right]);
+
+            // when we hit window
+            if (right - left + 1 == k) {
+                result.add(maxQueue.peekFirst());
+                if (maxQueue.peekFirst() == arr[left]) {
+                    maxQueue.pollFirst();
                 }
-                maxNum.addLast(i);
+                left++;
+                right++;
             }
 
-            for (; i < arr.length; i++) {
-                answer.add(arr[maxNum.peek()]);
-
-                while (!maxNum.isEmpty() && maxNum.peek() <= i - k) {
-                    maxNum.removeFirst();
-                }
-                while (!maxNum.isEmpty() && arr[i] >= arr[maxNum.peekLast()]) {
-                    maxNum.removeLast();
-                }
-                maxNum.addLast(i);
+            if (right - left + 1 < k) {
+                right++;
             }
-            answer.add(arr[maxNum.peek()]);
-            int[] arrAns=new int[answer.size()];
-            
-            for(int j=0;j<arrAns.length;j++){
-             arrAns[j]=answer.get(j);    
-            }
-            return arrAns;  
+        }
+        return result.stream().mapToInt(i -> i).toArray();
     }
 }
