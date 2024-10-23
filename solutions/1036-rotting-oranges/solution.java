@@ -1,51 +1,75 @@
 class Solution {
-    private int row;
-    private int col;
+    static class Orange {
+        int row;
+        int col;
+        int time;
+
+        public Orange(int row, int col, int time) {
+            this.row = row;
+            this.col = col;
+            this.time = time;
+        }
+    }
+
+    /**
+     * BFS approach, as we need to rot oranges in simultaneous manner
+     *
+     * @param grid
+     * @return
+     */
     public int orangesRotting(int[][] grid) {
-        row = grid.length;
-        col = grid[0].length;
+        Queue<Orange> orangeQueue = new LinkedList<>();
+        int rowSize = grid.length;
+        int colSize = grid[0].length;
 
-        Queue<int[]> queue = new LinkedList<>();
+        // making a copy se we don't hamper the input
+        int[][] visited = new int[rowSize][colSize];
+        int freshOranges = 0;
 
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
+
+        // find the rotten pair and add in queue
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
                 if (grid[i][j] == 2) {
-                    queue.add(new int[]{i, j});
+                    orangeQueue.offer(new Orange(i, j, 0));
+                    visited[i][j] = 2;
+                } else if (grid[i][j] == 0) {
+                    visited[i][j] = 0;
+                } else if (grid[i][j] == 1) {
+                    visited[i][j] = 1;
+                    freshOranges++;
                 }
             }
         }
 
-        int[][] direction = {{1, 0}, {0, 1}, {0, -1}, {-1, 0}};
-        int level = 0;
+        int maxTime = 0;
+        int[] deltaRow = {-1, 0, 1, 0};
+        int[] deltaCol = {0, 1, 0, -1};
+        int rottenCount = 0;
+        // now do BFS
+        while (!orangeQueue.isEmpty()) {
+            int currRow = orangeQueue.peek().row;
+            int currCol = orangeQueue.peek().col;
+            int currTime = orangeQueue.peek().time;
+            maxTime = Math.max(maxTime, currTime);
+            orangeQueue.poll();
 
-        while (!queue.isEmpty()) {
-            level++;
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                int[] rottenCord = queue.poll();
-                for (int[] dir :
-                        direction) {
-                    int nx = rottenCord[0] + dir[0];
-                    int ny = rottenCord[1] + dir[1];
+            for (int i = 0; i < 4; i++) {
+                int nextRow = currRow + deltaRow[i];
+                int nextCol = currCol + deltaCol[i];
 
-                    if (nx < 0 || ny < 0 || nx >= row || ny >= col || grid[nx][ny] != 1) {
-                        continue;
-                    }
-
-                    grid[nx][ny] = 2;
-                    queue.offer(new int[]{nx, ny});
+                if (nextRow >= 0 && nextRow < rowSize && nextCol >= 0 && nextCol < colSize &&
+                        visited[nextRow][nextCol] == 1) {
+                    orangeQueue.add(new Orange(nextRow, nextCol, currTime + 1));
+                    visited[nextRow][nextCol] = 2;
+                    rottenCount++;
                 }
             }
         }
 
-        for (int[] rowx : grid) {
-            for (int elem :
-                    rowx) {
-                if (elem == 1) {
-                    return -1;
-                }
-            }
+        if (rottenCount != freshOranges) {
+            return -1;
         }
-        return level == 0 ? 0 : level - 1;
+        return maxTime;
     }
 }
