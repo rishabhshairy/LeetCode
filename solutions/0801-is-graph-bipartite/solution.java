@@ -1,12 +1,23 @@
 class Solution {
     public boolean isBipartite(int[][] graph) {
         int n = graph.length;
-        int[] color = new int[graph.length];
-        Arrays.fill(color, -1);
+        List<List<Integer>> adjacencyList = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
-            if (color[i] == -1) {
-                if (!checkDFS(graph, color, i)) {
+            List<Integer> rows = new ArrayList<>();
+            for (int vertex :
+                    graph[i]) {
+                rows.add(vertex);
+            }
+            adjacencyList.add(rows);
+        }
+        int[] colored = new int[n];
+        Arrays.fill(colored, -1);
+        int toColor = 0; // 1
+
+        for (int i = 0; i < n; i++) {
+            if (colored[i] == -1) {
+                if (!dfs(i, toColor, colored, adjacencyList)) {
                     return false;
                 }
             }
@@ -14,25 +25,19 @@ class Solution {
         return true;
     }
 
-    private boolean checkDFS(int[][] graph, int[] color, int node) {
-        if (color[node] == -1) {
-            color[node] = 1;
+    private boolean dfs(int currNode, int toColor, int[] colored, List<List<Integer>> adjacencyList) {
+        colored[currNode] = toColor;
 
-        }
-        
-        for (Integer adjNode :
-                graph[node]) {
-            if (color[adjNode] == -1) {
-                color[adjNode] = color[node] ^ 1;
-                if (!checkDFS(graph, color, adjNode)) {
+        for (Integer adjNode : adjacencyList.get(currNode)) {
+            if (colored[adjNode] == -1) {
+                if (!dfs(adjNode, 1 - toColor, colored, adjacencyList)) {
                     return false;
                 }
-
-            } else if (color[adjNode] == color[node]) {
+            } // if the adjacent is previously colored by traversal and is of same color return false
+            else if (colored[adjNode] == toColor) {
                 return false;
             }
         }
         return true;
     }
-
 }
