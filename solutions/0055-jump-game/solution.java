@@ -1,36 +1,13 @@
 class Solution {
-    public boolean canJump(int[] arr) {
-       if (arr.length <= 1) {
-            return true;
-        }
-
-        if (arr[0] == 0) {
-            return false;
-        }
-
-        int max = arr[0];
-        int remainingSteps = arr[0];
-        int jump = 1;
-
-        for (int i = 1; i < arr.length; i++) {
-            if (i == arr.length - 1) {
-                return true;
+    public boolean canJump(int[] nums) {
+        int maxIndex = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i > maxIndex) {
+                return false;
             }
+            maxIndex = Math.max(maxIndex, i + nums[i]);
 
-            max = Math.max(max, i + arr[i]);
-            remainingSteps--;
-
-            if (remainingSteps == 0) {
-                jump++;
-
-                if (i >= max) {
-                    return false;
-                }
-
-                remainingSteps = max - i;
-            }
         }
-
-        return false; 
+        return true;
     }
 }
