@@ -1,53 +1,49 @@
 class Solution {
     public String minWindow(String s, String t) {
-        HashMap<Character, Integer> hm = new HashMap<>();
+        int m = s.length();
+        int n = t.length();
 
-        for (Character c :
-                s.toCharArray()) {
-            hm.put(c, 0);
+        if (m < n) return "";
+
+        int[] hash = new int[256];
+
+        for (int i = 0; i < t.length(); i++) {
+            hash[t.charAt(i)]++;
         }
 
-        for (Character c :
-                t.toCharArray()) {
-            if (hm.containsKey(c)) {
-                hm.put(c, hm.get(c) + 1);
-            } else {
-                return "";
-            }
-        }
-        int start = 0;
-        int end = 0; // use this to find valid window.
-        int counter = t.length();
-        int minStart = 0;
+        int counter = 0;
+        int startIndex = -1;
         int minLen = Integer.MAX_VALUE;
 
-        char[] temp = s.toCharArray();
+        int left = 0;
+        int right = 0;
 
-        while (end < s.length()) {
-            char c1 = temp[end];
-            if (hm.get(c1) > 0) {
-                counter--;
-            }
-            hm.put(c1, hm.get(c1) - 1);
-            end++;
+        while (right < s.length()) {
 
-            // below loop will run once valid window is found
-            while (counter == 0) {
-                if (end - start < minLen) {
-                    minStart = start;
-                    minLen = end - start;
-                }
-                char c2 = temp[start];
-                hm.put(c2, hm.get(c2) + 1);
-                if (hm.get(c2) > 0) {
-                    counter++;
-                }
-                start++;
+            // if same character is found
+            if (hash[s.charAt(right)] > 0) {
+                counter++;
             }
+
+            hash[s.charAt(right)]--;
+
+            while (counter == t.length()) {
+                
+                if (right - left + 1 < minLen) {
+                    minLen = right - left + 1;
+                    startIndex = left;
+                }
+                
+                hash[s.charAt(left)]++;
+                // re-inserted into map
+                if (hash[s.charAt(left)] > 0) {
+                    counter--;
+                }
+                left++;
+            }
+
+            right++;
         }
-        if (minLen != Integer.MAX_VALUE) {
-            return s.substring(minStart, minStart + minLen);
-        }
-        return "";
+        return startIndex == -1 ? "" : s.substring(startIndex, startIndex + minLen);
     }
 }
