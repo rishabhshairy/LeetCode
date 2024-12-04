@@ -3,26 +3,23 @@ class Solution {
         if (nums.length == 0) {
             return 0;
         }
-        int longest = 1;
-
-        Set<Integer> numSet = new LinkedHashSet<>();
-
+        Set<Integer> numSet = new TreeSet();
         for (int num : nums) {
             numSet.add(num);
         }
-
-        for (Integer currNum : numSet) {
-            if (!numSet.contains(currNum - 1)) {
-                int x = currNum;
-                int currLongest = 1;
-
-                while (numSet.contains(x + 1)) {
-                    x++;
-                    currLongest++;
-                }
-                longest = Math.max(longest, currLongest);
+        int longest = 0;
+        int count = 1;
+        List<Integer> list = new ArrayList<Integer>(numSet);
+        System.out.println(list);
+        for (int i = 0; i < list.size() - 1; i++) {
+            if (list.get(i) + 1 == list.get(i + 1)) {
+                count++;
+            } else {
+                longest = Math.max(longest, count);
+                count = 1;
             }
         }
+        longest = Math.max(longest, count);
         return longest;
     }
 }
