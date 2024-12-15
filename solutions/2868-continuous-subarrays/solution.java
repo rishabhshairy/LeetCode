@@ -1,32 +1,26 @@
 class Solution {
-
     public long continuousSubarrays(int[] nums) {
-        // TreeMap to maintain sorted frequency map of current window
-        TreeMap<Integer, Integer> freq = new TreeMap<>();
+        long ans = 0;
         int left = 0, right = 0;
         int n = nums.length;
-        long count = 0; // Total count of valid subarrays
+        TreeMap<Integer, Integer> freqMap = new TreeMap<>();
 
         while (right < n) {
-            // Add current element to frequency map
-            freq.put(nums[right], freq.getOrDefault(nums[right], 0) + 1);
 
-            // While window violates the condition |nums[i] - nums[j]| ≤ 2
-            // Shrink window from left
-            while (freq.lastEntry().getKey() - freq.firstEntry().getKey() > 2) {
-                // Remove leftmost element from frequency map
-                freq.put(nums[left], freq.get(nums[left]) - 1);
-                if (freq.get(nums[left]) == 0) {
-                    freq.remove(nums[left]);
+            freqMap.put(nums[right], freqMap.getOrDefault(nums[right], 0) + 1);
+
+            while (freqMap.lastKey() - freqMap.firstKey() > 2) {
+                freqMap.put(nums[left], freqMap.get(nums[left]) - 1);
+                if (freqMap.get(nums[left]) == 0) {
+                    freqMap.remove(nums[left]);
                 }
                 left++;
             }
 
-            // Add count of all valid subarrays ending at right
-            count += right - left + 1;
+            ans += right - left + 1;
             right++;
         }
-
-        return count;
+        
+        return ans;
     }
 }
