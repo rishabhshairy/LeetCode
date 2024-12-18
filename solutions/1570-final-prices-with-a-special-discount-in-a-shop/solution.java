@@ -1,23 +1,14 @@
 class Solution {
     public int[] finalPrices(int[] prices) {
-                Stack<Integer> pricesAfterDiscount = new Stack<>();
-        int[] answer = new int[prices.length];
+        Stack<Integer> st = new Stack<>();
+        int[] results = prices.clone();
 
-        for (int i = prices.length - 1; i >= 0; i--) {
-            if (pricesAfterDiscount.isEmpty()) {
-                answer[i] = prices[i];
-            } else if (!pricesAfterDiscount.isEmpty() && prices[i] >= pricesAfterDiscount.peek()) {
-                answer[i] = prices[i] - pricesAfterDiscount.peek();
-            } else if (!pricesAfterDiscount.isEmpty() && prices[i] < pricesAfterDiscount.peek()) {
-                while (!pricesAfterDiscount.isEmpty() && prices[i] < pricesAfterDiscount.peek()) {
-                    pricesAfterDiscount.pop();
-                }
-
-                answer[i] = pricesAfterDiscount.isEmpty() ? prices[i] : prices[i] - pricesAfterDiscount.peek();
+        for (int i = 0; i < prices.length; i++) {
+            while (!st.isEmpty() && prices[st.peek()] >= prices[i]) {
+                results[st.pop()] -= prices[i];
             }
-            pricesAfterDiscount.push(prices[i]);
-
+            st.push(i);
         }
-        return answer;
+        return results;
     }
 }
