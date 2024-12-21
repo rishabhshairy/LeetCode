@@ -1,40 +1,30 @@
 /**
  * Definition for singly-linked list.
  * public class ListNode {
- * int val;
- * ListNode next;
- * ListNode() {}
- * ListNode(int val) { this.val = val; }
- * ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
  * }
  */
 class Solution {
     public boolean isPalindrome(ListNode head) {
-        if (head == null) {
-            return true;
-        }
-        int len = 0;
-        List<String> listBuilder = new ArrayList<>();
-        while (head != null) {
-            len++;
-            if (head.val != -1) {
-                listBuilder.add(String.valueOf(head.val));
-            }
-            head = head.next;
-        }
+        Stack<Integer> nodeStack = new Stack<>();
 
-        if (len == 1) {
-            return true;
+        ListNode temp = head;
+        while (temp != null) {
+            nodeStack.push(temp.val);
+            temp = temp.next;
         }
-
-        int start = 0;
-        int end = listBuilder.size() - 1;
-        while (start <= end) {
-            if (!listBuilder.get(start++).equals(listBuilder.get(end--))) {
+        temp = head;
+        while (!nodeStack.isEmpty()) {
+            if (nodeStack.pop() == temp.val) {
+                temp = temp.next;
+            } else {
                 return false;
             }
         }
-
-        return true;
+        return nodeStack.isEmpty();
     }
 }
