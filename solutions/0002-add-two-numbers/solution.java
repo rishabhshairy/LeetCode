@@ -10,69 +10,28 @@
  */
 class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        
-        if(l1==null){
-            return l2;
-        }
-        
-        if(l2==null){
-            return l1;
-        }
-        
-        int len1 = size(l1);
-        int len2 = size(l2);
-
-        if (len1 > len2) {
-            int i = len1 - len2;
-            ListNode temp = l2;
-            while (temp.next != null) {
-                temp = temp.next;
-            }
-            while (i-- > 0) {
-                temp.next = new ListNode(0, null);
-                temp = temp.next;
-            }
-        } else if (len1 < len2) {
-            int i = len2 - len1;
-            ListNode temp = l1;
-            while (temp.next != null) {
-                temp = temp.next;
-            }
-            while (i-- > 0) {
-                temp.next = new ListNode(0, null);
-                temp = temp.next;
-            }
-        }
-        ListNode tempA = l1;
-        ListNode pre = l1;
-        ListNode tempB = l2;
+        ListNode dummy = new ListNode(-1);
+        ListNode temp = dummy;
         int carry = 0;
-        while (tempA != null && tempB != null) {
-            int sum = tempA.val + tempB.val + carry;
-            if (sum < 10) {
-                tempA.val = sum;
-                carry = 0;
-            } else {
-                carry = sum / 10;
-                tempA.val = sum % 10;
-            }
-            pre = tempA;
-            tempA = tempA.next;
-            tempB = tempB.next;
-        }
 
-        if (carry == 1) {
-            pre.next = new ListNode(carry, null);
-        }
-        return l1;
-    }
-        static int size(ListNode head) {
-        int len = 0;
-        ListNode temp = head;
-        while (temp != null) {
-            len++;
+        while ((l1 != null || l2 != null) || carry != 0) {
+
+            int sum = 0;
+            if (l1 != null) {
+                sum += l1.val;
+                l1 = l1.next;
+            }
+            if (l2 != null) {
+                sum += l2.val;
+                l2 = l2.next;
+            }
+
+            sum += carry;
+            carry = sum / 10;
+            ListNode newNode = new ListNode(sum % 10);
+            temp.next = newNode;
             temp = temp.next;
         }
-        return len;
+        return dummy.next;
     }
 }
