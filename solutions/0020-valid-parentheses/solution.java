@@ -1,19 +1,19 @@
 class Solution {
     public boolean isValid(String s) {
-        Stack<Character> brackets = new Stack<>();
-        if (s.length()==1){
+        if(s.length()==1){
             return false;
         }
-        for (char c :
-                s.toCharArray()) {
-            if (c == '(') {
+        Stack<Character> brackets = new Stack<>();
+
+        for (Character ch : s.toCharArray()) {
+            if (ch == '(') {
                 brackets.push(')');
-            } else if (c == '{') {
+            } else if (ch == '{') {
                 brackets.push('}');
-            } else if (c == '[') {
+            } else if (ch == '[') {
                 brackets.push(']');
             } else {
-                if ( !brackets.isEmpty() && c == brackets.peek() ) {
+                if (!brackets.isEmpty() && brackets.peek().equals(ch)) {
                     brackets.pop();
                 } else {
                     return false;
