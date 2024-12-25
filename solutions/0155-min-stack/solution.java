@@ -1,35 +1,33 @@
 class MinStack {
 
-    /** initialize your data structure here. */
-    Stack<Integer> st=new Stack<>();
-    int min=Integer.MAX_VALUE;
+    Stack<Integer> minStack;
+    Stack<Integer> st;
+
     public MinStack() {
-        
+        minStack = new Stack<>();
+        st = new Stack<>();
     }
-    
+
     public void push(int val) {
-        if(val<=min){
-            st.push(min);
-            min=val;
-        }
         st.push(val);
-    }
-    
-    public void pop() {
-        if(st.peek() == min){
-            st.pop();
-            min=st.pop();
-        } else{
-            st.pop();
+        if (minStack.isEmpty() || minStack.peek() >= val) {
+            minStack.push(val);
         }
     }
-    
-    public int top() {
-     return st.peek();
+
+    public void pop() {
+        if (st.peek().equals(minStack.peek())) {
+            minStack.pop();
+        }
+        st.pop();
     }
-    
+
+    public int top() {
+        return st.peek();
+    }
+
     public int getMin() {
-        return min;
+        return minStack.peek();
     }
 }
 
