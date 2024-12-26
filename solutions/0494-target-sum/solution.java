@@ -1,44 +1,46 @@
 class Solution {
     public int findTargetSumWays(int[] nums, int target) {
-        int n = nums.length;
-        HashMap<Integer, HashMap<Integer, Integer>> dpMap = new HashMap<>();
+        int totalSum = Arrays.stream(nums).sum();
 
-        return totalWays(n - 1, nums, target, dpMap);
-    }
+		int diff = totalSum - target;
 
-    private int totalWays(int index, int[] nums, int target, HashMap<Integer, HashMap<Integer, Integer>> dpMap) {
+		// chck for edge cases
+		if (diff < 0 || diff % 2 != 0) {
+			return 0;
+		}
 
-        // base condition
-        if (index == 0) {
-            // since both ways can add up to answer
-            int ways = 0;
+		int k = (diff / 2);
+		int n = nums.length;
+		// declare dp array
 
-            if (target - nums[index] == 0) {
-                ways++;
-            }
-            if (target + nums[index] == 0) {
-                ways++;
-            }
+		int[][] dp = new int[n][k + 1];
 
-            return ways;
-        }
+		// base case
+		// for sum 0, 1st col will be 1
+		for (int i = 0; i < dp.length; i++) {
+			dp[i][0] = 1;
+		}
+		// if we reach last element and its less than target ret 1
+		if (nums[0] <= k) {
+			dp[0][nums[0]] = 1;
+		}
+		// for zero at begining ret2
+		if (nums[0] == 0) {
+			dp[0][0] = 2;
+		}
 
-        // using dpMap since we cannot store negative index in table
-        if (dpMap.containsKey(index)) {
-            if (dpMap.get(index).containsKey(target)) {
-                return dpMap.get(index).get(target);
-            }
-        }
+		for (int index = 1; index < dp.length; index++) {
+			for (int j = 0; j <= k; j++) {
+				int notPick = dp[index - 1][j];
+				int pick = 0;
+				if (nums[index] <= j) {
+					pick = dp[index - 1][j - nums[index]];
+				}
 
-        int addition = totalWays(index - 1, nums, target + nums[index], dpMap);
-        int subtraction = totalWays(index - 1, nums, target - nums[index], dpMap);
+				dp[index][j] = notPick + pick;
+			}
 
-        int totalWays = addition + subtraction;
-        // Memoizing now
-        HashMap<Integer, Integer> targetWayMap = new HashMap<>();
-        targetWayMap.put(target, totalWays);
-        dpMap.put(index, targetWayMap);
-        
-        return totalWays;
+		}
+		return dp[n - 1][k];
     }
 }
