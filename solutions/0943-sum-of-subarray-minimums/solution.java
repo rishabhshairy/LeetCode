@@ -1,21 +1,50 @@
 class Solution {
-    public int sumSubarrayMins(int[] A) {
-        Stack<Integer> numStack = new Stack<>();
-        int total = 0, mod = (int) (1e9 + 7);
-        int[] dp = new int[A.length];
+    public int sumSubarrayMins(int[] arr) {
+        long sum = 0;
+        int mod = (int) (1e9 + 7);
 
-        for (int i = 0; i < A.length; i++) {
-            while (!numStack.isEmpty() && A[numStack.peek()] > A[i]) {
-                numStack.pop();
-            }
-            if (numStack.isEmpty()) {
-                dp[i] = (i + 1) * A[i];
-            } else {
-                dp[i] = dp[numStack.peek()] + (i - numStack.peek()) * A[i];
-            }
-            total = (total + dp[i]) % mod;
-            numStack.push(i);
+        int[] psee = findPreviousSmallerEqualIndex(arr);
+        int[] nse = findNextSmallerIndex(arr);
+
+        for (int i = 0; i < arr.length; i++) {
+
+            long left = i - psee[i];
+            long right = nse[i] - i;
+
+            sum = (sum + (right * left * arr[i])) % mod;
+
         }
-        return total;
+        return (int) sum % mod;
+    }
+
+    private int[] findNextSmallerIndex(int[] arr) {
+        int[] nseIndex = new int[arr.length];
+
+        Stack<Integer> stack = new Stack<>();
+        for (int i = arr.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && arr[i] <= arr[stack.peek()]) {
+                stack.pop();
+            }
+            nseIndex[i] = stack.isEmpty() ? arr.length : stack.peek();
+
+            stack.push(i);
+        }
+        return nseIndex;
+    }
+
+    // previous smaller element index for each element
+    private int[] findPreviousSmallerEqualIndex(int[] arr) {
+        int n = arr.length;
+        int[] psee = new int[n];
+
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < arr.length; i++) {
+            while (!stack.isEmpty() && arr[i] < arr[stack.peek()]) {
+                stack.pop();
+            }
+            psee[i] = stack.isEmpty() ? -1 : stack.peek();
+            stack.push(i);
+        }
+        return psee;
     }
 }
