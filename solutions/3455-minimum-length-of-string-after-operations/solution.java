@@ -3,27 +3,28 @@ class Solution {
         if (s.length() <= 2) {
             return s.length();
         }
-
-        Map<Character, Integer> charMap = new HashMap<>();
-
-        for (Character c : s.toCharArray()) {
-            charMap.put(c, charMap.getOrDefault(c, 0) + 1);
+        int[] freq = new int[26];
+        for (Character ch : s.toCharArray()) {
+            freq[ch - 'a']++;
         }
-        // System.out.println(charMap);
-        int minLength = 0;
-        for (Character currChar : charMap.keySet()) {
-            int charCount = charMap.get(currChar);
-            if (charCount > 2) {
-
-                if (charCount % 2 == 0) {
-                    minLength += (charCount - (charCount - 2));
-                } else {
-                    minLength += (charCount - (charCount - 1));
-                }
+        int sum=0;
+        for (int i = 0; i < freq.length; i++) {
+            if (freq[i] <= 2) {
+                sum+=freq[i];
+                continue;
             } else {
-                minLength += charCount;
+                if (freq[i] % 2 == 0) {
+                    while (freq[i] > 2) {
+                        freq[i]--;
+                    }
+                } else {
+                    while (freq[i] > 1) {
+                        freq[i]--;
+                    }
+                }
+                sum+=freq[i];
             }
         }
-        return minLength;
+        return sum;
     }
 }
