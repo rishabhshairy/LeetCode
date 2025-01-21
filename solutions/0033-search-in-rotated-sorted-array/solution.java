@@ -1,37 +1,31 @@
 class Solution {
     public int search(int[] nums, int target) {
-        int n = nums.length;
-        return findIndex(nums, target, n);
-    }
-        public static int findIndex(int[] nums,int target, int n) {
-        int low = 0;
-        int high = n-1;
+        int left = 0;
+        int right = nums.length - 1;
         int ans = -1;
 
-        while (low <= high) {
-            int mid = (low+high)/2;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
 
             if (nums[mid] == target) {
-                ans  = mid;
+                ans = mid;
             }
-            // left sorted
-            if (nums[low] <= nums[mid]) {
-                // check if element is between low and mid
-                if (nums[low] <= target && target <= nums[mid]) {
-                    high = mid - 1;
+
+            if (nums[left] <= nums[mid]) {
+                // left half is sorted
+                if (nums[left] <= target && target <= nums[mid]) {
+                    right = mid - 1;
                 } else {
-                    low = mid + 1;
+                    left = mid + 1;
                 }
-                
-            } // right sorted
-                else {
-                    // check if target is between mid and high
-                    if (nums[mid] <= target && target <= nums[high]) {
-                        low = mid + 1;
-                    } else {
-                        high = mid - 1;
-                    }
+            } else {
+                // right half is sorted
+                if (nums[mid] <= target && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
                 }
+            }
         }
         return ans;
     }
