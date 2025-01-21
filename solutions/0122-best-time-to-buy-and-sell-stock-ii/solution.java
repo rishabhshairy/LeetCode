@@ -1,29 +1,44 @@
 class Solution {
-    public int maxProfit(int[] values) {
-        int n = values.length;
-        long[][] dp = new long[n + 1][2];
-        long profit = 0;
+	public int maxProfit(int[] prices) {
+		int n = prices.length;
+		int[][] dp = new int[n][2]; // n - prices have 2 options buy/notbuy
+		for (int[] rows : dp) {
+			Arrays.fill(rows, -1);
+		}
+		boolean canBuy = true;
 
-        // base case --> When we have no stock to buy/sell
-        dp[n][0] = dp[n][1] = 0;
+		return findMax(0, canBuy, prices, dp);
+	}
 
-        for (int index = n - 1; index >= 0; index--) {
-            for (int canBuy = 0; canBuy <= 1; canBuy++) {
+	/**
+	 * @implNote For buy two flow buy & notBuy for Sell two flows sell & notSell
+	 * @param index
+	 * @param canBuy
+	 * @param prices
+	 * @param dp
+	 *            TODO
+	 * @return
+	 */
+	private int findMax(int index, boolean canBuy, int[] prices, int[][] dp) {
+		if (index == prices.length) {
+			return 0;
+		}
 
-                if (canBuy == 0) {
-                    long buy = -values[index] + dp[index + 1][1];
-                    long notBuy = dp[index + 1][0];
-                    profit = Math.max(buy, notBuy);
-                }
+		if (dp[index][canBuy ? 1 : 0] != -1) {
+			return dp[index][canBuy ? 1 : 0];
+		}
 
-                if (canBuy == 1) { // selling stocks
-                    long sell = values[index] + dp[index + 1][0];
-                    long notSell = dp[index + 1][1];
-                    profit = Math.max(sell, notSell);
-                }
-                dp[index][canBuy] = profit;
-            }
-        }
-        return (int)dp[0][0];
-    }
+		int profit = 0;
+		if (canBuy) {
+			int buy = -prices[index] + findMax(index + 1, false, prices, dp);
+			int notBuy = findMax(index + 1, true, prices, dp);
+			profit = Math.max(buy, notBuy);
+		} else {
+			int sell = prices[index] + findMax(index + 1, true, prices, dp);
+			int notSell = findMax(index + 1, false, prices, dp);
+			profit = Math.max(sell, notSell);
+		}
+
+		return dp[index][canBuy ? 1 : 0] = profit;
+	}
 }
