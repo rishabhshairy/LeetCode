@@ -10,31 +10,27 @@
  */
 class Solution {
     public ListNode insertionSortList(ListNode head) {
-        ListNode currTemp = head;
-        ListNode sortedHead = null;
+        
+		ListNode dummy = new ListNode(0);
+		ListNode curr = head;
 
-        while (currTemp != null) {
-            ListNode next = currTemp.next;
-            sortedHead = sortedList(sortedHead, currTemp);
-            currTemp = next;
-        }
-        return sortedHead;
-    }
+		while (curr != null) {
+			ListNode prev = dummy;
 
-    private ListNode sortedList(ListNode sortedHead, ListNode newNode) {
-        if (sortedHead == null || sortedHead.val >= newNode.val) {
-            newNode.next = sortedHead;
-            return newNode;
-        } else {
-            ListNode curr = sortedHead;
-            
-            while (curr.next != null && curr.next.val < newNode.val) {
-                curr = curr.next;
+			// logic to find position
+			while (prev.next != null && prev.next.val < curr.val) {
+				prev = prev.next;
+			}
+			ListNode next = curr.next;
 
-            }
-                newNode.next = curr.next;
-                curr.next = newNode;
-        }
-        return sortedHead;
+			// insert in position
+			curr.next = prev.next;
+			prev.next = curr;
+
+			// moving to next iteration
+			curr = next;
+
+		}
+		return dummy.next;
     }
 }
