@@ -1,47 +1,45 @@
 class Solution {
-    public List<Integer> eventualSafeNodes(int[][] graph) {
-        List<Integer> safeNodes = new ArrayList<>();
-        // using adjacency list to reverse the graph
-        List<List<Integer>> adjacencyList = new ArrayList<>();
-        int v = graph.length;
+	/**
+	 * DFS Approach
+	 * 
+	 * @param graph
+	 * @return
+	 */
+	public List<Integer> eventualSafeNodes(int[][] graph) {
+		List<Integer> result = new ArrayList<Integer>();
+		int[] visited = new int[graph.length];
 
-        for (int i = 0; i < v; i++) {
-            adjacencyList.add(new ArrayList<>());
-        }
+		// 3 states of nodes -- unknown, visited, safe
 
-        for (int i = 0; i < v; i++) {
-            for (int node : graph[i]) {
-                adjacencyList.get(node).add(i);
-            }
-        }
+		for (int i = 0; i < graph.length; i++) {
+			if (isSafe(i, graph, visited)) {
+				result.add(i);
+			}
+		}
+		return result;
+	}
 
-        int[] inDegrees = new int[v];
-        for (int i = 0; i < v; i++) {
-            for (Integer node : adjacencyList.get(i)) {
-                inDegrees[node]++;
-            }
-        }
+	private boolean isSafe(int node, int[][] graph, int[] visited) {
 
-        Queue<Integer> nodeQueue = new LinkedList<>();
-        for (int i = 0; i < v; i++) {
-            if (inDegrees[i] == 0) {
-                nodeQueue.offer(i);
-            }
-        }
+		// check if visited node is in previous path
+		if (visited[node] == 2) {
+			return true;
+		}
 
-        // Now do BFS
-        while (!nodeQueue.isEmpty()) {
-            Integer currNode = nodeQueue.poll();
-            safeNodes.add(currNode);
-            for (Integer adjNode : adjacencyList.get(currNode)) {
-                inDegrees[adjNode]--;
-                if (inDegrees[adjNode] == 0) {
-                    nodeQueue.offer(adjNode);
-                }
-            }
-        }
-        Collections.sort(safeNodes);
-        // System.out.println(safeNodes);
-        return safeNodes;
-    }
+		// check cylce
+		if (visited[node] == 1) {
+			return false;
+		}
+
+		visited[node] = 1;
+		for (int adjnode : graph[node]) {
+			if (!isSafe(adjnode, graph, visited)) {
+				return false;
+			}
+		}
+
+		// mark it safe
+		visited[node] = 2;
+		return true;
+	}
 }
