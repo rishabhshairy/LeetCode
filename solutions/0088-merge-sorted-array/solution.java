@@ -1,20 +1,15 @@
 class Solution {
-    public void merge(int[] arr1, int m, int[] arr2, int n) {
-        if(n==0){
-            return;
-        }
-        if (m == 0)
-        {
-            for(int i=0;i<n;i++){
-                arr1[i]=arr2[i];
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int i = m - 1;
+        int j = n - 1;
+        int k = m + n - 1;
+
+        while (j >= 0) {
+            if (i >= 0 && nums1[i] > nums2[j]) {
+                nums1[k--] = nums1[i--];
+            } else {
+                nums1[k--] = nums2[j--];
             }
         }
-        
-        int k=m;
-        for(int i=0;i<n;i++){
-            arr1[k]=arr2[i];
-            k++;
-        }
-        Arrays.sort(arr1);
     }
 }
