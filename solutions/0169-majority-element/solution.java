@@ -1,28 +1,25 @@
 class Solution {
     public int majorityElement(int[] nums) {
+        int majEle = 0;
         int count = 0;
-        int element = 0;
-
-        for (int i = 0; i < nums.length; i++) {
-            if (count == 0) {
+        for(int i=0;i<nums.length;i++){
+            if(count == 0){
                 count++;
-                element = nums[i];
-            } else if (element == nums[i]) {
+                majEle = nums[i];
+            } else if(majEle == nums[i]) {
                 count++;
             } else {
                 count--;
             }
         }
 
-        // check if stored element is Majority in array
-
-        int nextCount = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (element == nums[i]) {
-                nextCount++;
+        count = 0;
+        for(int i=0;i<nums.length;i++){
+            if(nums[i]==majEle){
+                count++;
             }
         }
 
-        return (nextCount > nums.length / 2) ? element : -1;
+        return count > nums.length/2 ? majEle : -1;
     }
 }
