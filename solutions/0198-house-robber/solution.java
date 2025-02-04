@@ -1,17 +1,25 @@
 class Solution {
-    public int rob(int[] nums) {
-                int n = nums.length;
-        int[] dp = new int[n+2];
-        Arrays.fill(dp,-1);
-        dp[n]=0;
-        dp[n+1]=0;
+	public int rob(int[] nums) {
+		int n = nums.length;
+		int[] mem = new int[n];
+		Arrays.fill(mem, -1);
 
-        for(int i=n-1;i>=0;i--) {
-            int take = nums[i] + dp[i+2];
-            int notTake = dp[i+1];
-            dp[i] = Math.max(take,notTake);
-        }
+		return solve(0, nums, mem);
 
-        return dp[0];
-    }
+	}
+
+	private int solve(int i, int[] nums, int[] mem) {
+		if (i >= nums.length) {
+			return 0;
+		}
+
+		if (mem[i] != -1) {
+			return mem[i];
+		}
+
+		int notPick = solve(i + 1, nums, mem);
+		int pick = nums[i] + solve(i + 2, nums, mem);
+
+		return mem[i] = Math.max(notPick, pick);
+	}
 }
