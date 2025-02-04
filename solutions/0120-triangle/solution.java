@@ -1,20 +1,35 @@
 class Solution {
-    public int minimumTotal(List<List<Integer>> triangle) {
-        int n = triangle.size();
-        int[] frontDp = new int[n];
-        int[] currDp = new int[n];
-        for (int j = 0; j < n; j++) {
-            frontDp[j] = triangle.get(n - 1).get(j);
-        }
+	public int minimumTotal(List<List<Integer>> triangle) {
 
-        for (int i = n - 2; i >= 0; i--) {
-            for (int j = i; j >= 0; j--) {
-                int down = triangle.get(i).get(j) + frontDp[j];
-                int diag = triangle.get(i).get(j) + frontDp[j+1];
-                currDp[j] = Math.min(down, diag);
-            }
-            frontDp = currDp.clone();
-        }
-        return frontDp[0];
-    }
+		int[][] grid = triangle.stream()
+				.map(x -> x.stream().mapToInt(i -> i).toArray())
+				.toArray(int[][]::new);
+
+		// Arrays.stream(grid).map(Arrays::toString).forEach(System.out::println);
+
+		int rowCount = grid.length;
+
+		int[][] dp = new int[rowCount][rowCount];
+		for (int[] row : dp) {
+			Arrays.fill(row, -1);
+		}
+
+		return solve(0, 0, grid, dp);
+	}
+
+	private int solve(int row, int col, int[][] grid, int[][] dp) {
+		if (row == grid.length) {
+			return 0;
+		}
+
+		if (dp[row][col] != -1) {
+			return dp[row][col];
+		}
+
+		// two path down or diagonal
+		int down = grid[row][col] + solve(row + 1, col, grid, dp);
+		int diag = grid[row][col] + solve(row + 1, col + 1, grid, dp);
+
+		return dp[row][col] = Math.min(down, diag);
+	}
 }
