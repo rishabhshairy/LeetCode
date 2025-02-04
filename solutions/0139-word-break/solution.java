@@ -1,23 +1,19 @@
 class Solution {
-    HashMap<String, Boolean> wordMap = new HashMap<>();
     public boolean wordBreak(String s, List<String> wordDict) {
-        if (s.length() == 0) {
-            return true;
-        }
-        if (wordMap.containsKey(s) && !wordMap.get(s)) {
-            return false;
-        }
+        int n = s.length();
+		Set<String> words = new HashSet<>(wordDict);
+		boolean[] dp = new boolean[n + 1];
+		dp[0] = true;
 
-        for (String word :
-                wordDict) {
-            int len = word.length();
-            if (s.indexOf(word) == 0) {
-                if (wordBreak(s.substring(len), wordDict)) {
-                    return true;
-                }
-            }
-        }
-        wordMap.put(s, false);
-        return false;
+		// logic here is if we can find substring of s in words set
+		for (int i = 1; i <= n; i++) {
+			for (int j = 0; j < i; j++) {
+				if (dp[j] && words.contains(s.substring(j, i))) {
+					dp[i] = true;
+					break;
+				}
+			}
+		}
+		return dp[n];
     }
 }
