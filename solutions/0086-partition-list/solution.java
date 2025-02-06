@@ -10,28 +10,28 @@
  */
 class Solution {
     public ListNode partition(ListNode head, int x) {
-        ListNode less = new ListNode();
-        ListNode currLess = less;
+        ListNode less = new ListNode(0);
+		ListNode lessDummy = less;
 
-        ListNode more = new ListNode();
-        ListNode currMore = more;
+		ListNode more = new ListNode(0);
+		ListNode moreDummy = more;
 
-
-        ListNode temp = head;
-
-        while (temp != null) {
-            ListNode node = temp;
-            if (node.val < x) {
-                currLess.next = node;
-                currLess = currLess.next;
-            } else {
-                currMore.next = node;
-                currMore = currMore.next;
-            }
-            temp=temp.next;
-            node.next=null;
-        }
-        currLess.next = more.next;
-        return less.next;
+		ListNode temp = head;
+		while (temp != null) {
+			
+			// create a node for memory adjustment
+			ListNode node = temp; 
+			if (temp.val < x) {
+				lessDummy.next = node;
+				lessDummy = lessDummy.next;
+			} else {
+				moreDummy.next = node;
+				moreDummy = moreDummy.next;
+			}
+			temp = temp.next;
+			node.next = null;
+		}
+		lessDummy.next = more.next;
+		return less.next;
     }
 }
