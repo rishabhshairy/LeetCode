@@ -2,19 +2,19 @@ class Solution {
     public int maxArea(int[] height) {
         int left = 0;
         int right = height.length - 1;
-        int res = 0;
-        int area = 0;
+        int maxArea = Integer.MIN_VALUE;
 
         while (left < right) {
-            area = Math.min(height[left], height[right]) * (right - left);
-            res = Math.max(res, area);
-            // since we want to maximize container--> difference of walls should be minimum
+            int length = Math.min(height[left], height[right]);
+            int width = right - left;
+            maxArea = Math.max(length * width, maxArea);
+
             if (height[left] <= height[right]) {
                 left++;
             } else {
                 right--;
             }
         }
-        return res;
+        return maxArea;
     }
 }
