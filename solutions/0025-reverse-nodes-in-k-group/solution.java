@@ -10,34 +10,61 @@
  */
 class Solution {
     public ListNode reverseKGroup(ListNode head, int k) {
-        ListNode curr=head;
-        int count=1;
-        
-        ListNode pre=null, next=null;
-        
-        while(curr!=null && count<=k){
-            next=curr.next;
-            curr.next=pre;
-            pre=curr;
-            curr=next;
-            count++;
-        }
-     //   System.out.println(size(next));
-        if((size(next)%k==0 || size(next)>k) && next!=null){
-            ListNode res=reverseKGroup(next,k);
-            head.next=res;
-        } else{
-            head.next=next;
-        }
-        return pre;
-    }
-    static int size(ListNode head) {
-        int len = 0;
         ListNode temp = head;
+
+        // to store last node of kth group
+        ListNode prevLast = null;
+
         while (temp != null) {
-            len++;
+            ListNode kThNode = getKthNode(temp, k);
+
+            // incomplete group, link prevLast to current node
+            if (kThNode == null) {
+                if (prevLast != null) {
+                    prevLast.next = temp;
+                }
+                break;
+            }
+
+            // now reverse from kth node
+            ListNode nextNode = kThNode.next;
+            kThNode.next = null;
+            reverseLL(temp);
+
+            // Adjust head if reversal starts from head
+            if (temp == head) {
+                head = kThNode;
+            } else {
+                // Link the last node of the previous
+                // group to the reversed group
+                prevLast.next = kThNode;
+            }
+
+            prevLast = temp;
+            temp = nextNode;
+        }
+        return head;
+    }
+
+    private ListNode reverseLL(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+        ListNode tempHead = reverseLL(head.next);
+        ListNode front = head.next;
+        front.next = head;
+        head.next = null;
+        return tempHead;
+
+    }
+
+    private ListNode getKthNode(ListNode temp, int k) {
+        k -= 1;
+        while (temp != null && k > 0) {
+            k--;
             temp = temp.next;
         }
-        return len;
+        return temp;
     }
 }
