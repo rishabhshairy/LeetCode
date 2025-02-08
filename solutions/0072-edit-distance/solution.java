@@ -1,34 +1,40 @@
 class Solution {
-    public int minDistance(String str1, String str2) {
-        int n = str1.length();
-        int m = str2.length();
-        int[][] dp = new int[n + 1][m + 1];
+	public int minDistance(String word1, String word2) {
+		int n = word1.length();
+		int m = word2.length();
+		int[][] mem = new int[n][m];
+		for (int[] row : mem) {
+			Arrays.fill(row, -1);
+		}
+		return solve(n - 1, m - 1, word1, word2, mem);
+		
+	}
 
-        // base case
+	private int solve(int index1, int index2, String word1, String word2,
+			int[][] mem) {
 
-        for (int i = 0; i < n + 1; i++) {
-            dp[i][0] = i;
-        }
-        for (int j = 0; j < m + 1; j++) {
-            dp[0][j] = j;
-        }
+		if (index1 < 0) {
+			return index2 + 1;
+		}
 
-        for (int i = 1; i < n + 1; i++) {
-            for (int j = 1; j < m + 1; j++) {
-                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else {
-                    // 3 ops
-                    int insert = 1 + dp[i][j - 1];
-                    int delete = 1 + dp[i - 1][j];
-                    int replace = 1 + dp[i - 1][j - 1];
+		if (index2 < 0) {
+			return index1 + 1;
+		}
 
-                    dp[i][j] = Math.min(insert, Math.min(delete, replace));
+		if (mem[index1][index2] != -1) {
+			return mem[index1][index2];
+		}
 
-                }
-            }
-        }
-
-        return dp[n][m];
-    }
+		if (word1.charAt(index1) == word2.charAt(index2)) {
+			return mem[index1][index2] = solve(index1 - 1, index2 - 1, word1,
+					word2, mem);
+		} else {
+			// now we have 3 options
+			int insert = 1 + solve(index1, index2 - 1, word1, word2, mem);
+			int replace = 1 + solve(index1 - 1, index2 - 1, word1, word2, mem);
+			int delete = 1 + solve(index1 - 1, index2, word1, word2, mem);
+			return mem[index1][index2] = Math.min(insert,
+					Math.min(replace, delete));
+		}
+	}
 }
