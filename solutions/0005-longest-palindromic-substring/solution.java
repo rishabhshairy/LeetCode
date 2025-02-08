@@ -1,38 +1,36 @@
 class Solution {
     public String longestPalindrome(String s) {
-        String rev = new StringBuilder(s).reverse().toString();
-
-        int n = s.length();
-        int m = rev.length();
-        int[][] dp = new int[n + 1][m + 1];
-        int maxPalindromeSubstringLength = 0;
-        int endIndex = 0;
-
-        int rowP = 0, colP = 0;
-
-        for (int i = 1; i < n + 1; i++) {
-            for (int j = 1; j < m + 1; j++) {
-                if (s.charAt(i - 1) == rev.charAt(j - 1)) {
-                    dp[i][j] = 1 + dp[i - 1][j - 1];
-                    if (maxPalindromeSubstringLength < dp[i][j]) {
-
-                        int iStart = i - dp[i][j];
-                        int jEnd = j;
-
-                        if (iStart == s.length() - jEnd) {
-                            maxPalindromeSubstringLength = dp[i][j];
-                            endIndex = i;
-                        }
-
-                    }
-                } else {
-                    dp[i][j] = 0;
+        int maxLen = Integer.MIN_VALUE;
+        String res = "";
+        for (int i = 0; i < s.length(); i++) {
+            // Odd Length
+            int left = i;
+            int right = i;
+            while (left >= 0 && right < s.length()
+                    && s.charAt(left) == s.charAt(right)) {
+                // window size > maxLen
+                if (right - left + 1 > maxLen) {
+                    res = s.substring(left, right + 1);
+                    maxLen = right - left + 1;
                 }
+                left--;
+                right++;
+            }
+
+            // Even Length
+            left = i;
+            right = i + 1;
+            while (left >= 0 && right < s.length()
+                    && s.charAt(left) == s.charAt(right)) {
+                // window size > maxLen
+                if (right - left + 1 > maxLen) {
+                    res = s.substring(left, right + 1);
+                    maxLen = right - left + 1;
+                }
+                left--;
+                right++;
             }
         }
-
-        // System.out.println(maxPalindromeSubstringLength);
-
-        return s.substring(endIndex - maxPalindromeSubstringLength, endIndex);
+        return res;
     }
 }
