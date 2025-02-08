@@ -1,40 +1,42 @@
 class Solution {
     public int maxProfit(int k, int[] prices) {
         int n = prices.length;
-        int[][][] dp = new int[n][2][k+1]; // 3rd dimension is 3 because transaction can be 0,1,2
-
+        int[][][] dp = new int[n][2][k+1]; // why 3d -dp ?? because we have
+                                         // transactions variable
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < 2; j++) {
                 Arrays.fill(dp[i][j], -1);
             }
         }
+
         int canBuy = 1;
-        //int maxTransaction = 2;
-        return solveMemo(0, canBuy, k, prices, dp);
+
+        return solve(0, prices, canBuy, k, dp);
     }
-    private static int solveMemo(int index, int canBuy, int maxTransaction, int[] prices, int[][][] dp) {
-        // base case
-        if (index == prices.length || maxTransaction == 0) {
+
+    private int solve(int index, int[] prices, int canBuy, int maxTransactions,
+            int[][][] dp) {
+        if (index >= prices.length || maxTransactions == 0) {
             return 0;
         }
 
-        // memoized value
-        if (dp[index][canBuy][maxTransaction] != -1) {
-            return dp[index][canBuy][maxTransaction];
+        if (dp[index][canBuy][maxTransactions] != -1) {
+            return dp[index][canBuy][maxTransactions];
         }
-        int profit = 0;
-        if (canBuy == 1) {
-            int buy = -prices[index] + solveMemo(index + 1, 0, maxTransaction, prices, dp);
-            int notBuy = solveMemo(index + 1, 1, maxTransaction, prices, dp);
-            profit = Math.max(buy, notBuy);
 
+        int maxProfit = 0;
+        if (canBuy == 1) {
+            int buy = -prices[index]
+                    + solve(index + 1, prices, 0, maxTransactions, dp);
+            int notBuy = solve(index + 1, prices, 1, maxTransactions, dp);
+            maxProfit = Math.max(buy, notBuy);
+        } else {
+            int sell = prices[index]
+                    + solve(index + 1, prices, 1, maxTransactions - 1, dp);
+            int notSell = solve(index + 1, prices, 0, maxTransactions, dp);
+            maxProfit = Math.max(sell, notSell);
         }
-        if (canBuy == 0) {
-            int sell = prices[index] + solveMemo(index + 1, 1, maxTransaction - 1, prices, dp);
-            int notSell = solveMemo(index + 1, 0, maxTransaction, prices, dp);
-            profit = Math.max(sell, notSell);
-        }
-        dp[index][canBuy][maxTransaction] = profit;
-        return profit;
+
+        return dp[index][canBuy][maxTransactions] = maxProfit;
     }
 }
