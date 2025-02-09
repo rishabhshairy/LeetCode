@@ -1,32 +1,26 @@
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-        if(s.length()==0){
-            return 0;
-        }
         int left = 0;
 		int right = 0;
-		int maxLen = Integer.MIN_VALUE;
 
-		int[] charPos = new int[255];
-		Arrays.fill(charPos, -1);
+		int[] position = new int[255];
+		Arrays.fill(position, -1);
+		int maxLen = Integer.MIN_VALUE;
 
 		while (right < s.length()) {
 
-			// critical section -- if char is found previously
-			if (charPos[s.charAt(right)] != -1) {
-				// move char ahead one postion of current repeating
-                if(charPos[s.charAt(right)] >= left) {
-                    left = charPos[s.charAt(right)] + 1;
-                }
-				
+			if (position[s.charAt(right)] != -1) {
+				if (position[s.charAt(right)] >= left) {
+					left = position[s.charAt(right)] + 1; // move left one index
+															// ahead of repeated
+															// character
+				}
 			}
-
-			int len = right - left + 1;
-			maxLen = Math.max(maxLen, len);
-			charPos[s.charAt(right)] = right; // marking index of each position
+			maxLen = Math.max(maxLen, right - left + 1);
+			position[s.charAt(right)] = right;
 			right++;
-
 		}
-		return maxLen;
+		
+		return maxLen == Integer.MIN_VALUE ? 0 : maxLen;
     }
 }
