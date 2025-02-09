@@ -1,37 +1,41 @@
 class Solution {
     public List<Integer> spiralOrder(int[][] matrix) {
-                List<Integer> answer = new ArrayList<>();
-        int left = 0, right = matrix[0].length - 1, top = 0, bottom = matrix.length - 1;
-        int d = 1;
-        int m = matrix.length;
+        List<Integer> result = new ArrayList<Integer>();
+		// declare 4 variables
+		int top = 0;
+		int bottom = matrix.length - 1;
+		int left = 0;
+		int right = matrix[0].length - 1;
+		int dir = 1; // 1 --> right, 2 --> down, 3 --> left, 4 --> up
 
-        while (top <= bottom && left <= right) {
-            if (d == 1) {
-                for (int j = left; j <= right; j++) {
-                    answer.add(matrix[top][j]);
-                }
-                d = 2;
-                top++;
-            } else if (d == 2) {
-                for (int j = top; j <= bottom; j++) {
-                    answer.add(matrix[j][right]);
-                }
-                d = 3;
-                right--;
-            } else if (d == 3) {
-                for (int j = right; j >= left; j--) {
-                    answer.add(matrix[bottom][j]);
-                }
-                d = 4;
-                bottom--;
-            } else if (d == 4) {
-                for (int i = bottom; i >= top; i--) {
-                    answer.add(matrix[i][left]);
-                }
-                d = 1;
-                left++;
-            }
-        }
-        return answer;
+		while (top <= bottom && left <= right) {
+
+			if (dir == 1) {
+				for (int i = left; i <= right; i++) {
+					result.add(matrix[top][i]);
+				}
+				dir = 2;
+				top++;
+			} else if (dir == 2) {
+				for (int i = top; i <= bottom; i++) {
+					result.add(matrix[i][right]);
+				}
+				dir = 3;
+				right--;
+			} else if (dir == 3) {
+				for (int i = right; i >= left; i--) {
+					result.add(matrix[bottom][i]);
+				}
+				dir = 4;
+				bottom--;
+			} else {
+				for (int i = bottom; i >= top; i--) {
+					result.add(matrix[i][left]);
+				}
+				left++;
+				dir=1;
+			}
+		}
+		return result;
     }
 }
