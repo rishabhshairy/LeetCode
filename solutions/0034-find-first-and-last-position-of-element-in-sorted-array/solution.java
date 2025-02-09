@@ -1,44 +1,42 @@
 class Solution {
     public int[] searchRange(int[] nums, int target) {
-        int n = nums.length;
-        int first = findLowerBound(nums, target);
-        if (first == n || nums[first] != target) {
+        int[] result = { -1, -1 };
+        int left = 0;
+        int right = nums.length - 1;
+
+        result[0] = lowerBound(left, right, nums, target);
+        if (result[0] == nums.length || nums[result[0]] != target) {
             return new int[] { -1, -1 };
         }
-        return new int[]{first, findUpperBound(nums,target)-1};
+        result[1] = upperBound(left, right, nums, target) - 1;
+        return result;
     }
 
-    public static int findLowerBound(int[] arr, int target) {
-        int low = 0;
-        int high = arr.length - 1;
-        int ans = arr.length; // setting hypothetical answer if we dont find any such number
+    private int upperBound(int left, int right, int[] nums, int target) {
+        int ans = nums.length;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
 
-        while (low <= high) {
-            int mid = (low + high) / 2;
-
-            if (arr[mid] >= target) {
+            if (nums[mid] > target) {
                 ans = mid;
-                high = mid - 1;
+                right = mid - 1;
             } else {
-                low = mid + 1;
+                left = mid + 1;
             }
         }
         return ans;
     }
 
-    public static int findUpperBound(int[] arr, int target) {
-        int low = 0;
-        int high = arr.length - 1;
-        int ans = arr.length; // setting hypothetical answer if we dont find any such number
+    private int lowerBound(int left, int right, int[] nums, int target) {
+       int ans = nums.length;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
 
-        while (low <= high) {
-            int mid = (low + high) / 2;
-
-            if (arr[mid] > target) {
+            if (nums[mid] >= target) {
                 ans = mid;
-                high = mid - 1;
+                right = mid - 1;
             } else {
-                low = mid + 1;
+                left = mid + 1;
             }
         }
         return ans;
