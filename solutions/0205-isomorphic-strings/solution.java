@@ -1,22 +1,15 @@
 class Solution {
     public boolean isIsomorphic(String s, String t) {
-        		if (s.length() != t.length()) {
-			return false;
-		}
+        int[] sMap = new int[255];
+		int[] tMap = new int[255];
 
-		int[] smap = new int[256];
-		int[] tmap = new int[256];
-		int n = s.length();
-
-		for (int i = 0; i < n; i++) {
-
-			if (smap[s.charAt(i)] != tmap[t.charAt(i)]) {
+		for (int i = 0; i < s.length(); i++) {
+			if (sMap[s.charAt(i)] != tMap[t.charAt(i)]) {
 				return false;
 			}
 
-			smap[s.charAt(i)] = i + 1;
-			tmap[t.charAt(i)] = i + 1;
-
+			sMap[s.charAt(i)] = i + 1;
+			tMap[t.charAt(i)] = i + 1;
 		}
 		return true;
     }
