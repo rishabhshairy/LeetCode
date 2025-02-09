@@ -1,49 +1,50 @@
 class Solution {
     public String minWindow(String s, String t) {
-        int m = s.length();
-        int n = t.length();
+        int n = s.length();
+		int m = t.length();
 
-        if (m < n) return "";
+		int[] freq = new int[256];
 
-        int[] hash = new int[256];
+		if (n < m) {
+			return "";
+		}
 
-        for (int i = 0; i < t.length(); i++) {
-            hash[t.charAt(i)]++;
-        }
+		// step 1 store hash of t
+		for (int i = 0; i < t.length(); i++) {
+			freq[t.charAt(i)]++;
+		}
 
-        int counter = 0;
-        int startIndex = -1;
-        int minLen = Integer.MAX_VALUE;
+		int left = 0;
+		int right = 0;
+		int count = 0;
+		int startIndex = -1;
+		int minLen = Integer.MAX_VALUE;
 
-        int left = 0;
-        int right = 0;
+		while (right < n) {
+			// check if curr char in S is there in freq
+			if (freq[s.charAt(right)] > 0) {
+				count++;
+			}
 
-        while (right < s.length()) {
+			// main logic
+			freq[s.charAt(right)]--;
 
-            // if same character is found
-            if (hash[s.charAt(right)] > 0) {
-                counter++;
-            }
+			while (count == t.length()) {
+				if (minLen > right - left + 1) {
+					minLen = right - left + 1;
+					startIndex = left; // found window start for answer
+				}
 
-            hash[s.charAt(right)]--;
+				// increase hash as we move forward
+				freq[s.charAt(left)]++;
+				if (freq[s.charAt(left)] > 0) {
+					count--;
+				}
+				left++;
+			}
 
-            while (counter == t.length()) {
-                
-                if (right - left + 1 < minLen) {
-                    minLen = right - left + 1;
-                    startIndex = left;
-                }
-                
-                hash[s.charAt(left)]++;
-                // re-inserted into map
-                if (hash[s.charAt(left)] > 0) {
-                    counter--;
-                }
-                left++;
-            }
-
-            right++;
-        }
-        return startIndex == -1 ? "" : s.substring(startIndex, startIndex + minLen);
+			right++;
+		}
+		return startIndex == -1 ? "" : s.substring(startIndex, startIndex + minLen);
     }
 }
