@@ -1,40 +1,53 @@
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode() {}
- *     TreeNode(int val) { this.val = val; }
- *     TreeNode(int val, TreeNode left, TreeNode right) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
  * }
  */
 class Solution {
     int index = 0;
 
     public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
-        HashMap<Integer, Integer> hm = new HashMap<>();
+        Map<Integer, Integer> postMap = new HashMap<>();
         for (int i = 0; i < postorder.length; i++) {
-            hm.put(postorder[i], i);
+            postMap.put(postorder[i], i);
         }
-        return solve(preorder, postorder, hm, 0, postorder.length - 1);
+
+        return solve(0, postorder.length - 1, preorder, postorder, postMap);
     }
 
-    private TreeNode solve(int[] preorder, int[] postorder, HashMap<Integer, Integer> hm, int start, int end) {
+    private TreeNode solve(int start, int end, int[] preorder, int[] postorder,
+            Map<Integer, Integer> postMap) {
+
         if (start > end) {
             return null;
         }
-        TreeNode root = new TreeNode(preorder[index++]);
+
+        TreeNode node = new TreeNode(preorder[index++]);
+
         if (start == end) {
-            return root;
+            return node;
         }
-        int splitIndex = hm.get(preorder[index]);
-        root.left = solve(preorder, postorder, hm, start, splitIndex);
-        root.right = solve(preorder, postorder, hm, splitIndex + 1, end - 1);
-        return root;
+
+        // find index to split
+        int splitIndex = postMap.get(preorder[index]);
+
+        // left node should be till splitIndex
+        node.left = solve(start, splitIndex, preorder, postorder, postMap);
+
+        // right node should start from splitIndex
+        node.right = solve(splitIndex + 1, end - 1, preorder, postorder,
+                postMap);
+
+        return node;
     }
 }
